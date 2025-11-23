@@ -11,13 +11,9 @@ const HomePage = () => {
         return <div className="h-screen flex items-center justify-center">Loading...</div>;
     }
 
+    // Redirect authenticated users to main layout
     if (user) {
-        return (
-            <div className="h-full relative">
-                <ChatWindow />
-                <VoiceAssistantButton />
-            </div>
-        );
+        return null;
     }
 
     return (

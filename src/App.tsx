@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext'
 import { LanguageProvider } from './lib/i18n/LanguageContext'
 import MainLayout from './components/layout/MainLayout'
 import HomePage from './features/home/HomePage'
+import ChatHomePage from './features/chat/ChatHomePage'
 import SignInPage from './features/auth/SignInPage';
 import SignUpPage from './features/auth/SignUpPage';
 import AgentDashboard from './features/dashboard/AgentDashboard';
@@ -27,6 +28,9 @@ function App() {
       <AuthProvider>
         <LanguageProvider>
           <Routes>
+            {/* Public Landing Page */}
+            <Route path="/home" element={<HomePage />} />
+            
             {/* Public Auth Routes */}
             <Route path="/signin" element={<SignInPage />} />
             <Route path="/signup" element={<SignUpPage />} />
@@ -39,7 +43,7 @@ function App() {
 
             {/* Main App Layout */}
             <Route path="/" element={<MainLayout />}>
-              <Route index element={<HomePage />} />
+              <Route index element={<ChatHomePage />} />
 
               {/* Reporting & Chat */}
               <Route path="report/:category" element={<AIJournalistChat />} />
