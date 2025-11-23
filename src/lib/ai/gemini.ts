@@ -1,32 +1,34 @@
-import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
+import { supabase } from '../supabase';
 
 export interface GeminiMessage {
-    role: 'user' | 'model';
-    parts: { text: string }[];
+    role: 'user' | 'assistant';
+    content: string;
 }
-
-// Initialize GoogleGenAI with API Key from process.env
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
 export const geminiService = {
     async generateContent(history: GeminiMessage[], systemInstruction?: string) {
         try {
-            const response: GenerateContentResponse = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: history,
-                config: {
-                    systemInstruction: systemInstruction,
-                    temperature: 0.7,
-                    maxOutputTokens: 1000,
+            // Convert messages to the format expected by the edge function
+            const messages = history.map(msg => ({
+                role: msg.role === 'assistant' ? 'assistant' : 'user',
+                content: msg.content
+            }));
+
+            const { data, error } = await supabase.functions.invoke('ai-chat', {
+                body: {
+                    messages,
+                    systemInstruction
                 }
             });
 
+            if (error) throw error;
+
             return {
-                text: response.text || '',
-                raw: response
+                text: data?.text || '',
+                raw: data
             };
         } catch (error) {
-            console.error('Gemini API Error:', error);
+            console.error('AI Chat Error:', error);
             throw error;
         }
     },
@@ -45,24 +47,15 @@ export const geminiService = {
         });
 
         try {
-            const response = await ai.models.generateContent({
-                model: 'gemini-2.5-flash',
-                contents: {
-                    parts: [
-                        { text: "Please transcribe this audio exactly as it is spoken. If it is in Hausa, translate it to English as well." },
-                        {
-                            inlineData: {
-                                mimeType: audioBlob.type || 'audio/webm',
-                                data: base64Audio
-                            }
-                        }
-                    ]
-                }
+            const { data, error } = await supabase.functions.invoke('transcribe-audio', {
+                body: { audio: base64Audio }
             });
 
-            return response.text || '';
+            if (error) throw error;
+
+            return data?.text || '';
         } catch (error) {
-            console.error('Gemini Audio Transcription Error:', error);
+            console.error('Audio Transcription Error:', error);
             throw error;
         }
     }
