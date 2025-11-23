@@ -81,14 +81,14 @@ export const generateResponse = async (context: MessageContext): Promise<AIRespo
         6. The "options" array should suggest 2-4 likely next responses for the user.
     `;
 
-    // Convert history to Gemini format
-    const history = context.history.map(msg => ({
-        role: msg.role === 'assistant' ? 'model' : 'user' as 'model' | 'user',
-        parts: [{ text: msg.content }]
+    // Convert history to Lovable AI format
+    const messages = context.history.map(msg => ({
+        role: msg.role,
+        content: msg.content
     }));
 
     try {
-        const response = await geminiService.generateContent(history, systemInstruction);
+        const response = await geminiService.generateContent(messages, systemInstruction);
 
         // Parse JSON response
         // Gemini might wrap JSON in markdown code blocks, strip them
