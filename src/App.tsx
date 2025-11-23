@@ -21,6 +21,7 @@ import { CaseDetail } from './features/cases/CaseDetail'
 import { EventCalendar } from './features/events/EventCalendar'
 import { ResourceLibrary } from './features/resources/ResourceLibrary'
 import { EmergencyContacts } from './features/emergency/EmergencyContacts'
+import { ForumsPage } from './features/forums/ForumsPage'
 
 function App() {
   return (
@@ -61,6 +62,7 @@ function App() {
               <Route path="events" element={<EventCalendar />} />
               <Route path="resources" element={<ResourceLibrary />} />
               <Route path="emergency" element={<EmergencyContacts />} />
+              <Route path="forums" element={<ForumsPage />} />
 
               {/* Agent Dashboard */}
               <Route path="dashboard/agent" element={<AgentDashboard />} />

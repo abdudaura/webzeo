@@ -8,8 +8,8 @@ const MobileNav = () => {
 
     const navItems = [
         { icon: MessageSquare, label: 'Chats', path: '/' },
+        { icon: Users, label: 'Forums', path: '/forums' },
         { icon: CircleDashed, label: 'Impact', path: '/impact' },
-        { icon: Users, label: 'Events', path: '/events' },
         { icon: Phone, label: 'Emergency', path: '/emergency' },
     ]
 
