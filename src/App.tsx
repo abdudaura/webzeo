@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './contexts/AuthContext'
 import { LanguageProvider } from './lib/i18n/LanguageContext'
 import MainLayout from './components/layout/MainLayout'
+import ChatLayout from './components/layout/ChatLayout'
 import HomePage from './features/home/HomePage'
 import ChatHomePage from './features/chat/ChatHomePage'
 import SignInPage from './features/auth/SignInPage';
@@ -42,29 +43,23 @@ function App() {
             <Route path="/volunteer/review" element={<VolunteerApplicationsDashboard />} />
             <Route path="/volunteer/manage" element={<VolunteerManagementPage />} />
 
-            {/* Main App Layout */}
+            {/* Chat Routes - WhatsApp-style Layout */}
             <Route path="/" element={<MainLayout />}>
-              <Route index element={<ChatHomePage />} />
+              <Route element={<ChatLayout />}>
+                <Route index element={<ChatHomePage />} />
+                <Route path="report/:category" element={<AIJournalistChat />} />
+                <Route path="states/:state" element={<StateReportBrowser />} />
+              </Route>
 
-              {/* Reporting & Chat */}
-              <Route path="report/:category" element={<AIJournalistChat />} />
-
-              {/* Data & Browsing */}
-              <Route path="states/:state" element={<StateReportBrowser />} />
+              {/* Full-width Routes */}
               <Route path="impact" element={<ImpactDashboard />} />
               <Route path="success" element={<SuccessStoriesPage />} />
-
-              {/* Case Management */}
               <Route path="cases" element={<CaseDashboard />} />
               <Route path="cases/:id" element={<CaseDetail />} />
-
-              {/* Community & Resources */}
               <Route path="events" element={<EventCalendar />} />
               <Route path="resources" element={<ResourceLibrary />} />
               <Route path="emergency" element={<EmergencyContacts />} />
               <Route path="forums" element={<ForumsPage />} />
-
-              {/* Agent Dashboard */}
               <Route path="dashboard/agent" element={<AgentDashboard />} />
             </Route>
 

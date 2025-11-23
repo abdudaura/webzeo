@@ -10,41 +10,112 @@ interface Message {
 }
 
 interface ConversationState {
-    conversations: Record<string, Message[]> // Keyed by category
+    conversations: Record<string, Message[]>
     activeCategory: string | null
-    addMessage: (category: string, message: Message) => void
-    setMessages: (category: string, messages: Message[]) => void
-    setActiveCategory: (category: string) => void
+    messages: Message[]
+    addMessage: (message: Omit<Message, 'id'>) => void
+    setMessages: (messages: Message[]) => void
+    setCategory: (category: string) => void
     clearConversation: (category: string) => void
+    startRecording: () => Promise<void>
+    stopRecording: () => Promise<Blob>
+    isVoiceRecording: boolean
+    audioBlob: Blob | null
 }
 
 export const useConversationStore = create<ConversationState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             conversations: {},
             activeCategory: null,
-            addMessage: (category, message) =>
+            messages: [],
+            isVoiceRecording: false,
+            audioBlob: null,
+            
+            addMessage: (message) => {
+                const { activeCategory } = get()
+                if (!activeCategory) return
+                
+                const newMessage = { 
+                    ...message, 
+                    id: Date.now().toString() + Math.random() 
+                }
+                
+                set((state) => {
+                    const categoryMessages = state.conversations[activeCategory] || []
+                    return {
+                        conversations: {
+                            ...state.conversations,
+                            [activeCategory]: [...categoryMessages, newMessage],
+                        },
+                        messages: [...categoryMessages, newMessage]
+                    }
+                })
+            },
+            
+            setMessages: (messages) => {
+                const { activeCategory } = get()
+                if (!activeCategory) return
+                
                 set((state) => ({
                     conversations: {
                         ...state.conversations,
-                        [category]: [...(state.conversations[category] || []), message],
+                        [activeCategory]: messages,
                     },
-                })),
-            setMessages: (category, messages) =>
+                    messages
+                }))
+            },
+            
+            setCategory: (category) => {
                 set((state) => ({
-                    conversations: {
-                        ...state.conversations,
-                        [category]: messages,
-                    },
-                })),
-            setActiveCategory: (category) => set({ activeCategory: category }),
+                    activeCategory: category,
+                    messages: state.conversations[category] || []
+                }))
+            },
+            
             clearConversation: (category) =>
                 set((state) => ({
                     conversations: {
                         ...state.conversations,
                         [category]: [],
                     },
+                    messages: state.activeCategory === category ? [] : state.messages
                 })),
+            
+            startRecording: async () => {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+                const mediaRecorder = new MediaRecorder(stream)
+                const chunks: BlobPart[] = []
+                
+                mediaRecorder.ondataavailable = (e) => chunks.push(e.data)
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'audio/webm' })
+                    set({ audioBlob: blob, isVoiceRecording: false })
+                }
+                
+                mediaRecorder.start()
+                set({ isVoiceRecording: true })
+                ;(window as any).__mediaRecorder = mediaRecorder
+            },
+            
+            stopRecording: async () => {
+                const recorder = (window as any).__mediaRecorder
+                if (recorder && recorder.state !== 'inactive') {
+                    recorder.stop()
+                    recorder.stream.getTracks().forEach((track: MediaStreamTrack) => track.stop())
+                }
+                
+                return new Promise<Blob>((resolve) => {
+                    const checkBlob = setInterval(() => {
+                        const { audioBlob } = get()
+                        if (audioBlob) {
+                            clearInterval(checkBlob)
+                            resolve(audioBlob)
+                            set({ audioBlob: null })
+                        }
+                    }, 100)
+                })
+            },
         }),
         {
             name: 'ceddert-conversations',
