@@ -14,184 +14,149 @@ export type Database = {
   }
   public: {
     Tables: {
-      calls: {
+      courses: {
         Row: {
-          call_type: string
-          created_at: string
-          duration: number
-          id: string
-          is_video: boolean
-          persona_id: string
-          user_id: string
-        }
-        Insert: {
-          call_type: string
-          created_at?: string
-          duration?: number
-          id?: string
-          is_video?: boolean
-          persona_id: string
-          user_id: string
-        }
-        Update: {
-          call_type?: string
-          created_at?: string
-          duration?: number
-          id?: string
-          is_video?: boolean
-          persona_id?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "calls_persona_id_fkey"
-            columns: ["persona_id"]
-            isOneToOne: false
-            referencedRelation: "personas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      messages: {
-        Row: {
-          audio_url: string | null
-          content: string
           created_at: string
           id: string
-          image_url: string | null
-          message_type: string
-          persona_id: string
-          sender: string
-          user_id: string
-        }
-        Insert: {
-          audio_url?: string | null
-          content: string
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          message_type?: string
-          persona_id: string
-          sender: string
-          user_id: string
-        }
-        Update: {
-          audio_url?: string | null
-          content?: string
-          created_at?: string
-          id?: string
-          image_url?: string | null
-          message_type?: string
-          persona_id?: string
-          sender?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "messages_persona_id_fkey"
-            columns: ["persona_id"]
-            isOneToOne: false
-            referencedRelation: "personas"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      personas: {
-        Row: {
-          avatar: string | null
-          created_at: string
-          description: string | null
-          id: string
-          is_favorite: boolean
           name: string
-          system_prompt: string | null
+          progress: number | null
+          updated_at: string
+          user_id: string
         }
         Insert: {
-          avatar?: string | null
           created_at?: string
-          description?: string | null
           id?: string
-          is_favorite?: boolean
           name: string
-          system_prompt?: string | null
+          progress?: number | null
+          updated_at?: string
+          user_id: string
         }
         Update: {
-          avatar?: string | null
           created_at?: string
-          description?: string | null
           id?: string
-          is_favorite?: boolean
           name?: string
-          system_prompt?: string | null
+          progress?: number | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
       profiles: {
         Row: {
-          call_balance: number
           created_at: string
-          display_name: string | null
           id: string
-          is_suspended: boolean
-          phone_number: string
+          last_session_at: string | null
+          total_study_time: number | null
           updated_at: string
-        }
-        Insert: {
-          call_balance?: number
-          created_at?: string
-          display_name?: string | null
-          id: string
-          is_suspended?: boolean
-          phone_number: string
-          updated_at?: string
-        }
-        Update: {
-          call_balance?: number
-          created_at?: string
-          display_name?: string | null
-          id?: string
-          is_suspended?: boolean
-          phone_number?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      user_roles: {
-        Row: {
-          created_at: string
-          id: string
-          role: Database["public"]["Enums"]["app_role"]
           user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
-          role: Database["public"]["Enums"]["app_role"]
+          last_session_at?: string | null
+          total_study_time?: number | null
+          updated_at?: string
           user_id: string
         }
         Update: {
           created_at?: string
           id?: string
-          role?: Database["public"]["Enums"]["app_role"]
+          last_session_at?: string | null
+          total_study_time?: number | null
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      study_sessions: {
+        Row: {
+          course_id: string | null
+          duration_minutes: number | null
+          ended_at: string | null
+          id: string
+          started_at: string
+          topic_id: string | null
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          topic_id?: string | null
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          duration_minutes?: number | null
+          ended_at?: string | null
+          id?: string
+          started_at?: string
+          topic_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "study_sessions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "study_sessions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topics: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          name: string
+          progress: number | null
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          name: string
+          progress?: number | null
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          name?: string
+          progress?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topics_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
+      [_ in never]: never
     }
     Enums: {
-      app_role: "admin" | "user"
+      [_ in never]: never
     }
     CompositeTypes: {
       [_ in never]: never
@@ -318,8 +283,6 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {
-      app_role: ["admin", "user"],
-    },
+    Enums: {},
   },
 } as const
