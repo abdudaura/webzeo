@@ -8,9 +8,9 @@ const MobileNav = () => {
 
     const navItems = [
         { icon: MessageSquare, label: 'Chats', path: '/' },
-        { icon: CircleDashed, label: 'Status', path: '/status' },
-        { icon: Users, label: 'Communities', path: '/communities' },
-        { icon: Phone, label: 'Calls', path: '/calls' },
+        { icon: CircleDashed, label: 'Impact', path: '/impact' },
+        { icon: Users, label: 'Events', path: '/events' },
+        { icon: Phone, label: 'Emergency', path: '/emergency' },
     ]
 
     return (

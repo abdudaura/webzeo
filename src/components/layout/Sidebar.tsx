@@ -15,9 +15,10 @@ const Sidebar = ({ collapsed, onToggle }: SidebarProps) => {
     const location = useLocation()
 
     const menuItems = [
-        { icon: Home, label: 'Home', path: '/' },
-        { icon: FileText, label: 'My Reports', path: '/reports' },
-        { icon: Users, label: 'Community', path: '/community' },
+        { icon: Home, label: 'Chats', path: '/' },
+        { icon: FileText, label: 'Impact', path: '/impact' },
+        { icon: Users, label: 'Events', path: '/events' },
+        { icon: BarChart2, label: 'Resources', path: '/resources' },
     ]
 
     if (hasPermission(userRole, 'view_analytics')) {

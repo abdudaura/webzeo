@@ -11,6 +11,9 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, path.resolve(), '');
   return {
     plugins: [react()],
+    server: {
+      port: 8080
+    },
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
