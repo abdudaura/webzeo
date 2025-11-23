@@ -1,0 +1,5 @@
+{
+  "name": "Copy of Aboki",
+  "description": "A minimal, WhatsApp-like application featuring human-to-human chats, human-to-AI persona chats, and an integrated money wallet for peer-to-peer transfers, all powered by a clean and intuitive interface.",
+  "requestFramePermissions": []
+}

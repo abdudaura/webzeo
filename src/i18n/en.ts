@@ -1,0 +1,17 @@
+export const en = {
+    'app.title': 'CEDDERT',
+    'nav.home': 'Home',
+    'nav.reports': 'Reports',
+    'nav.library': 'Library',
+    'nav.events': 'Events',
+    'nav.chat': 'Chat',
+    'nav.signin': 'Sign In',
+    'nav.signup': 'Sign Up',
+    'nav.profile': 'Profile',
+    'hero.title': 'Citizen Journalism & Research',
+    'hero.subtitle': 'Empowering citizens to report issues and engage with democratic development.',
+    'action.report': 'Report Issue',
+    'action.library': 'Browse Library',
+    'action.research': 'View Research',
+    'action.events': 'Upcoming Events',
+}

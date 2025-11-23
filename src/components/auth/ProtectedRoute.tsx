@@ -1,0 +1,28 @@
+import React from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
+import { Permission, hasPermission } from '../../lib/permissions';
+
+interface ProtectedRouteProps {
+    children: React.ReactNode;
+    requiredPermission?: Permission;
+}
+
+export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredPermission }) => {
+    const { user, userRole, loading } = useAuth();
+    const location = useLocation();
+
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    }
+
+    if (!user) {
+        return <Navigate to="/login" state={{ from: location }} replace />;
+    }
+
+    if (requiredPermission && userRole && !hasPermission(userRole, requiredPermission)) {
+        return <Navigate to="/unauthorized" replace />;
+    }
+
+    return <>{children}</>;
+};
